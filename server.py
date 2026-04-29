@@ -4,7 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# Secure API key from Render Environment Variables
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
@@ -17,7 +16,7 @@ model = genai.GenerativeModel("gemini-1.5-flash")
 
 @app.route("/")
 def home():
-    return "HomeworkHero Backend Running ✅"
+    return "HomeworkHero Backend Running"
 
 
 @app.route("/ask", methods=["POST"])
@@ -51,4 +50,3 @@ def ask():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-```
