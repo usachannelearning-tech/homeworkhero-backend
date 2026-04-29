@@ -1,30 +1,55 @@
+```python
 from flask import Flask, request, jsonify
-from google import genai
+import google.generativeai as genai
+import os
 
 app = Flask(__name__)
 
-# Your Gemini API key
-client = genai.Client(api_key="AIzaSyA9V6z9aM_VeJ2lCxqCR4HMc6WLl2U9ddQ")
+# Secure API key from Render Environment Variables
+
+
+if not GEMINI_API_KEY:
+    raise ValueError("GEMINI_API_KEY is missing in Render Environment Variables")
+
+genai.configure(api_key=GEMINI_API_KEY)
+
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+
+@app.route("/")
+def home():
+    return "HomeworkHero Backend Running ✅"
+
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    data = request.get_json()
-    prompt = data.get("prompt", "")
-
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
-
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-        return jsonify({"reply": response.text})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        data = request.get_json()
 
-import os
+        if not data:
+            return jsonify({"error": "No JSON data received"}), 400
+
+        prompt = data.get("prompt", "")
+
+        if not prompt:
+            return jsonify({"error": "No prompt provided"}), 400
+
+        response = model.generate_content(prompt)
+
+        if not response.text:
+            return jsonify({"error": "Empty response from Gemini"}), 500
+
+        return jsonify({
+            "reply": response.text
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+```
