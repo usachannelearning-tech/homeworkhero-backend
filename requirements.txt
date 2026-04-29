@@ -1,4 +1,3 @@
-```txt id="j8yq5l"
 flask
 gunicorn
 google-generativeai
