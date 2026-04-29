@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Secure API key from Render Environment Variables
-
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
     raise ValueError("GEMINI_API_KEY is missing in Render Environment Variables")
