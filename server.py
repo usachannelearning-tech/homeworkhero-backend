@@ -11,7 +11,7 @@ if not GEMINI_API_KEY:
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-pro")
 
 
 @app.route("/")
@@ -32,7 +32,11 @@ def ask():
         if not prompt:
             return jsonify({"error": "No prompt provided"}), 400
 
+        print("PROMPT RECEIVED:", prompt)
+
         response = model.generate_content(prompt)
+
+        print("RESPONSE:", response.text)
 
         if not response.text:
             return jsonify({"error": "Empty response from Gemini"}), 500
